@@ -27,8 +27,12 @@ public class arrayandString {
         //---------------------------find length of last words--------------------------------//
         String var1="   fly me   to   the moon  ";
         System.out.println(lengthOfLastWord(var1));
+
         }
 
+        public static void reverseneighbor(){
+
+        }
     public static String reverseWords(String s) {
         String ss = " ";
         int i = 0;
