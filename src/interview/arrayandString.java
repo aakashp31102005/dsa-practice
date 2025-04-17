@@ -87,6 +87,27 @@ public class arrayandString {
         validPalindrome("zryxeededexyz");
         //--------------------container with max water---------------------------//
             maxArea(new int[]{1,1});
+    //---------------------squares of sorted array----------------------------//
+        sortedSquares(new int[]{-4,-1,0,3,10});
+    }
+    public static  int[] sortedSquares(int[] nums){
+        for(int i=0;i<nums.length;i++){
+            nums[i]=nums[i]*nums[i];
+        }
+        int[] temp=new int[nums.length];
+        int j=temp.length-1;
+        int i=0;
+        while(i<temp.length && j>=0){
+            if(nums[i]<nums[j]){
+                temp[j]=nums[j];
+                j--;
+            }else{
+                temp[j]=nums[i];
+                i++;
+                j--;
+            }
+        }
+        return temp;
     }
     public static int maxArea(int[] height) {
         int n=height.length;
