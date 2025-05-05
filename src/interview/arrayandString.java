@@ -107,14 +107,238 @@ public class arrayandString {
         System.out.println(hasAllCodes("0110",2));
     //---------------------------longest ones---------------------------------//
         System.out.println(longestOnes(new int[]{0,0,0,1},4));
+
     //-----------------checkInclusion-----------------------------//
-        System.out.println(isPermutation("abc","bca"));
+    System.out.println(isPermutation("abc","bca"));
+    //----------------FOR ALL KIND OF PERMUTATION BASED SLIDING WINDOW PROBLEMS---------------------//
+        /*Rule of Thumb
+         If you're trying to count down what’s still needed, mutate is fine.
+         If you're comparing windows to a fixed pattern, don't mutate — use a copy.
+         **/
 
+    //---------------------------check permutatoin of substring in string//
+    System.out.println(search("geeks","eke"));
+
+    //-----------------------------max satisfied customers--------------------//
         System.out.println(maxSatisfied(new int[]{1},new int[]{0},1));
+    //------------------------longest substring without repeating character----------------//
+        System.out.println(lengthOfLongestSubstring("pwwkew"));
 
+        //----------------longest with k unique character-----------------//
+        System.out.println(longestkSubstr("aaaa",2));
+
+        System.out.println(countIncreasing(new int[]{1, 5}));
+
+        //----------------------------can split---------------//
+        System.out.println(canSplit(new int[]{4, 3, 2, 1}));
+
+        //--------------------removeConsecutive duplicate character------------//
+        System.out.println(removeConsecutiveCharacter("abcddcba"));
+
+        //------------------------------longest unique substr witout duplicates-----------//
+        System.out.println(longestUniqueSubstr("aaa"));
+
+        //-------------2958. Length of Longest Subarray With at Most K Frequency------------//
+        System.out.println(maxSubarrayLength(new int[]{5,5,5,5,5,5,5},4));
+
+        //--------------------
+        System.out.println(maxVowels("a",1));
+    }
+
+    public static int maxVowels(String s, int k) {
+        int left=0;
+        String vowel="aeiou";
+        Set<Character> set=new HashSet<>();
+        for(char element:vowel.toCharArray()){
+            set.add(element);
+        }
+       int rwv=0;
+        int maxlen=0;
+        for(int i=0;i<k;i++){
+            if(set.contains(s.charAt(i))){
+                rwv++;
+            }
+        }
+        if(k==s.length()){
+            return rwv;
+        }
+        for(int right=k;right<s.length();right++){
+            if(set.contains(s.charAt(left))){
+                rwv--;
+            }
+            if(set.contains(s.charAt(right))){
+                rwv++;
+            }
+            left++;
+            maxlen=Math.max(maxlen,rwv);
+        }
+        System.out.println(maxlen);
+        return maxlen;
+    }
+    public static int maxSubarrayLength(int[] nums, int k) {
+        int left=0;
+        int maxlen=Integer.MIN_VALUE;
+        HashMap<Integer,Integer> hm=new HashMap<>();
+        for(int right=0;right< nums.length;right++){
+           hm.put(nums[right],hm.getOrDefault(nums[right],0)+1);
+           while(hm.get(nums[left]) >k || hm.get(nums[right])>k){
+               hm.put(nums[left],hm.get(nums[left])-1);
+               if(hm.get(nums[left])==0){
+                   hm.remove(nums[left]);
+               }
+               left++;
+           }
+            int wlen=right-left+1;
+            maxlen=Math.max(wlen,maxlen);
+        }
+        return maxlen;
+    }
+    public static int longestUniqueSubstr(String s) {
+        int left=0;
+        int maxlen=Integer.MIN_VALUE;
+        HashMap<Character,Integer> hm=new HashMap<>();
+        for(int right=0;right<s.length();right++){
+            char wchar=s.charAt(right);
+            hm.put(wchar,hm.getOrDefault(wchar,0)+1);
+            while(hm.get(wchar) >1){
+                hm.put(s.charAt(left),hm.get(s.charAt(left))-1);
+                if(hm.get(s.charAt(left))==0){
+                    hm.remove(s.charAt(left));
+                }
+                left++;
+            }
+
+            int wlen=right-left+1;
+            maxlen=Math.max(wlen,maxlen);
+
+        }
+        return maxlen;
+    }
+    public static String removeConsecutiveCharacter(String s) {
+        if(s.length() ==1){
+            return s;
+        }
+        StringBuilder temp=new StringBuilder();
+        temp.append(s.charAt(0));
+       for(int right=1;right<s.length();right++){
+           if(s.charAt(right)!=s.charAt(right-1)){
+               temp.append(s.charAt(right));
+           }
+
+       }
+      return temp.toString();
+    }
+    public static boolean canSplit(int arr[]) {
+       int sum= Arrays.stream(arr).sum();
+       int s1=0;
+        for(int right=0;right<arr.length;right++){
+            s1+=arr[right];
+            if(sum-s1 == s1){
+                return true;
+            }
+        }
+        return false;
     }
 
 
+    public static int countIncreasing(int[] arr) {
+        int left = 0;
+        int count = 0;
+
+        for (int right = 1; right <= arr.length; right++) {
+            if (right < arr.length && arr[right - 1] < arr[right]) {
+                // continue expanding the increasing window
+                continue;
+            } else {
+                // window is from left to right-1
+                int len = right - left;
+                if (len >= 2) {
+                    count += (len * (len - 1)) / 2;
+                }
+                left = right; // start new window
+            }
+        }
+
+        return count;
+    }
+    public static boolean search(String txt, String pat) {
+        if (pat.length() > txt.length()) return false;
+
+        Map<Character, Integer> patMap = new HashMap<>();
+        for (char c : pat.toCharArray()) {
+            patMap.put(c, patMap.getOrDefault(c, 0) + 1);
+        }
+
+        Map<Character, Integer> windowMap = new HashMap<>();
+        for (int i = 0; i < pat.length(); i++) {
+            char c = txt.charAt(i);
+            windowMap.put(c, windowMap.getOrDefault(c, 0) + 1);
+        }
+
+        if (windowMap.equals(patMap)) return true;
+
+        for (int i = pat.length(); i < txt.length(); i++) {
+            char newChar = txt.charAt(i);
+            char oldChar = txt.charAt(i - pat.length());
+
+            windowMap.put(newChar, windowMap.getOrDefault(newChar, 0) + 1);
+            windowMap.put(oldChar, windowMap.get(oldChar) - 1);
+            if (windowMap.get(oldChar) == 0) {
+                windowMap.remove(oldChar);
+            }
+
+            if (windowMap.equals(patMap)) return true;
+        }
+
+        return false;
+    }
+
+
+    public static int longestkSubstr(String s, int k) {
+       int left=0;
+       int maxlen=-1;
+       int count=0;
+       HashMap<Character,Integer> hm=new HashMap<>();
+       for(int right=0;right<s.length();right++){
+           char temp=s.charAt(right);
+           if(!hm.containsKey(temp)){
+               count++;
+           }
+           int wilen=right-left+1;
+           if(count==k) {
+               maxlen = Math.max(wilen, maxlen);
+           }
+           while(count > k){
+               hm.put(s.charAt(left),hm.get(s.charAt(left))-1);
+               if(hm.get(s.charAt(left))==0){
+                   hm.remove(s.charAt(left));
+                   count--;
+               }
+               left++;
+           }
+
+           hm.put(temp,hm.getOrDefault(temp,0)+1);
+       }
+       return maxlen;
+    }
+
+    public static int lengthOfLongestSubstring(String s) {
+        int left=0;
+        int result=Integer.MIN_VALUE;
+        HashMap<Character,Integer> hm=new HashMap<>();
+        for(int right=0;right<s.length();right++){
+            char wchar=s.charAt(right);
+            hm.put(wchar,hm.getOrDefault(wchar,0)+1);
+            while(hm.get(wchar) >1){
+                char leftchar=s.charAt(left);
+                hm.put(leftchar,hm.get(leftchar)-1);
+                left++;
+            }
+            result=Math.max(result,right-left+1);
+
+        }
+        return result;
+    }
     public static  int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
         int base=0;
             for(int i=0;i<grumpy.length;i++){
