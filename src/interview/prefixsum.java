@@ -16,6 +16,7 @@ public class prefixsum {
         NumMatrixx nm=new NumMatrixx(matrix);
         nm.sumRegion(2, 1, 4, 3);
         System.out.println(pivotIndex(new int[]{1,7,3,6,5,9}));
+        System.out.println("hello world");
     }
 
     public static int pivotIndex(int[] nums) {
